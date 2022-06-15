@@ -1,0 +1,37 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: $APP_TEST_APP_IP
+      APP_PORT: $APP_TEST_APP_PORT
+
+  web:
+    image: getumbrel/btc-rpc-explorer:v3.3.0@sha256:cfd14f8e722cfbf1ad106ba224569c8babe685422461a641abc210e13913c636
+    restart: on-failure
+    stop_grace_period: 1m
+    environment:
+      # Docker requirements
+      BTCEXP_HOST: 0.0.0.0
+      # Bitcoin Core
+      BTCEXP_BITCOIND_HOST: $APP_BITCOIN_NODE_IP
+      BTCEXP_BITCOIND_PORT: $APP_BITCOIN_RPC_PORT
+      BTCEXP_BITCOIND_USER: $APP_BITCOIN_RPC_USER
+      BTCEXP_BITCOIND_PASS: $APP_BITCOIN_RPC_PASS
+      # Electrum
+      BTCEXP_ADDRESS_API: electrumx
+      BTCEXP_ELECTRUMX_SERVERS: "tcp://$APP_ELECTRS_NODE_IP:$APP_ELECTRS_NODE_PORT"
+      # Log level
+      DEBUG: "btcexp:*,electrumClient"
+      # Performance
+      BTCEXP_SLOW_DEVICE_MODE: "true"
+      BTCEXP_NO_INMEMORY_RPC_CACHE: "true"
+      # Privacy
+      BTCEXP_PRIVACY_MODE: "true"
+      BTCEXP_NO_RATES: "true"
+      # Disable RPC
+      BTCEXP_RPC_ALLOWALL: "false"
+      BTCEXP_BASIC_AUTH_PASSWORD: ""
+    networks:
+      default:
+        ipv4_address: $APP_TEST_APP_IP

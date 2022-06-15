@@ -1,0 +1,2 @@
+export APP_TEST_APP_IP="10.21.21.12"
+export APP_TEST_APP_PORT="3002"
